@@ -8,10 +8,10 @@
 import UIKit
 
 final class FeedImageCell: UITableViewCell {
-    @IBOutlet weak var locationLabel: UILabel!
-    @IBOutlet weak var locationContainer: UIStackView!
-    @IBOutlet weak var feedImageView: UIImageView!
-    @IBOutlet weak var descriptionLabel: UILabel!
+    @IBOutlet private weak var locationLabel: UILabel!
+    @IBOutlet private weak var locationContainer: UIStackView!
+    @IBOutlet private weak var feedImageView: UIImageView!
+    @IBOutlet private weak var descriptionLabel: UILabel!
     
     func configure(with model: FeedImageViewModel) {
         locationLabel.text = model.location
@@ -20,6 +20,30 @@ final class FeedImageCell: UITableViewCell {
         descriptionLabel.text = model.description
         descriptionLabel.isHidden = model.description == nil
         
-        feedImageView.image = UIImage(named: model.imageName)
+        fadeIn(UIImage(named: model.imageName))
     }
+    
+    override func awakeFromNib() {
+             super.awakeFromNib()
+
+             feedImageView.alpha = 0
+         }
+
+         override func prepareForReuse() {
+             super.prepareForReuse()
+
+             feedImageView.alpha = 0
+         }
+
+         func fadeIn(_ image: UIImage?) {
+             feedImageView.image = image
+
+             UIView.animate(
+                 withDuration: 0.3,
+                 delay: 0.3,
+                 options: [],
+                 animations: {
+                     self.feedImageView.alpha = 1
+                 })
+         }
 }
