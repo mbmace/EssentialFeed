@@ -1,32 +1,40 @@
 import EssentialFeed
 
- protocol FeedLoadingView {
-     func display(isLoading: Bool)
- }
+struct FeedLoadingViewModel {
+    let isLoading: Bool
+}
 
- protocol FeedView {
-     func display(feed: [FeedImage])
- }
+protocol FeedLoadingView {
+    func display(_ viewModel: FeedLoadingViewModel)
+}
 
- final class FeedPresenter {
-     typealias Observer<T> = (T) -> Void
+struct FeedViewModel {
+    let feed: [FeedImage]
+}
 
-     private let feedLoader: FeedLoader
+protocol FeedView {
+    func display(_ viewModel: FeedViewModel)
+}
 
-     init(feedLoader: FeedLoader) {
-         self.feedLoader = feedLoader
-     }
-
-     var feedView: FeedView?
-     var loadingView: FeedLoadingView?
-
-     func loadFeed() {
-         loadingView?.display(isLoading: true)
-         feedLoader.load { [weak self] result in
-             if let feed = try? result.get() {
-                 self?.feedView?.display(feed: feed)
-             }
-             self?.loadingView?.display(isLoading: false)
-         }
-     }
- }
+final class FeedPresenter {
+    typealias Observer<T> = (T) -> Void
+    
+    private let feedLoader: FeedLoader
+    
+    init(feedLoader: FeedLoader) {
+        self.feedLoader = feedLoader
+    }
+    
+    var feedView: FeedView?
+    var loadingView: FeedLoadingView?
+    
+    func loadFeed() {
+        loadingView?.display(FeedLoadingViewModel(isLoading: true))
+        feedLoader.load { [weak self] result in
+            if let feed = try? result.get() {
+                self?.feedView?.display(FeedViewModel(feed: feed))
+            }
+            self?.loadingView?.display(FeedLoadingViewModel(isLoading: false))
+        }
+    }
+}
