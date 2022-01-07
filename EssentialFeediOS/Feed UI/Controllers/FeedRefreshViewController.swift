@@ -8,20 +8,20 @@
 import UIKit
 import EssentialFeed
 
-protocol FeedRefreshViewControllerDelegate {
+public protocol FeedRefreshViewControllerDelegate {
      func didRequestFeedRefresh()
 }
 
-final class FeedRefreshViewController: NSObject, FeedLoadingView {
+public final class FeedRefreshViewController: NSObject, FeedLoadingView {
     @IBOutlet private var view: UIRefreshControl?
     
-    var delegate: FeedRefreshViewControllerDelegate?
+    public var delegate: FeedRefreshViewControllerDelegate?
     
     @IBAction func refresh() {
         delegate?.didRequestFeedRefresh()
     }
     
-    func display(_ viewModel: FeedLoadingViewModel) {
+    public func display(_ viewModel: FeedLoadingViewModel) {
         view?.update(isRefreshing: viewModel.isLoading)
     }
 }
